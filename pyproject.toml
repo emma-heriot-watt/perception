@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "python-template"
+name = "emma-perception"
 version = "0.1.0"
 description = ""
 authors = ["Amit Parekh <amit.parekh@hw.ac.uk>"]
 readme = "README.md"
-repository = "https://github.com/emma-simbot/python-template"
+repository = "https://github.com/emma-simbot/perception"
 
 packages = [{ include = "src" }]
 
@@ -28,7 +28,6 @@ torch = "^1.10.0"
 pytorch-lightning = "^1.5.7"
 torchvision = "^0.11.1"
 wandb = "^0.12.9"
-typing-extensions = "^4.0.1"
 torchmetrics = "^0.6.2"
 hydra-core = "^1.1.1"
 hydra-colorlog = "^1.1.0"
@@ -36,7 +35,6 @@ transformers = "^4.15.0"
 pydantic = { extras = ["dotenv"], version = "^1.8.2" }
 rich = "^10.16.1"
 overrides = "^6.1.0"
-python-dotenv = "^0.19.2"
 plotly = "^5.5.0"
 scikit-learn = "^1.0.2"
 
@@ -52,9 +50,7 @@ pre-commit = "^2.16.0"
 poethepoet = "^0.11.0"
 pytest-cov = "^3.0.0"
 jupyterlab = "^3.2.5"
-black = { version = "^21.12b0", extras = ["jupyter"] }
 pudb = "^2021.2.2"
-regex = "2021.11.1"
 isort = "^5.10.1"
 
 [tool.black]
