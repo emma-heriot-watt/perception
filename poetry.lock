@@ -1709,7 +1709,7 @@ cli = ["click (>=5.0)"]
 
 [[package]]
 name = "pytorch-lightning"
-version = "1.5.7"
+version = "1.5.8"
 description = "PyTorch Lightning is the lightweight PyTorch wrapper for ML researchers. Scale your models. Write less boilerplate."
 category = "main"
 optional = false
@@ -2496,7 +2496,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "53dcd08a75b523c182e94145c12eb9ce5b36d67e83ec030947b19b2f6e685cdb"
+content-hash = "d54a400594caf8a5d933c5cf80e1984576c585e026f5fcd57ce714292fa1e3ea"
 
 [metadata.files]
 absl-py = [
@@ -3703,8 +3703,8 @@ python-dotenv = [
     {file = "python_dotenv-0.19.2-py2.py3-none-any.whl", hash = "sha256:32b2bdc1873fd3a3c346da1c6db83d0053c3c62f28f1f38516070c4c8971b1d3"},
 ]
 pytorch-lightning = [
-    {file = "pytorch-lightning-1.5.7.tar.gz", hash = "sha256:5114dfb9ff14233092b3cae2b99fd76cc143f97a8759d5245e30fca8445d5cdd"},
-    {file = "pytorch_lightning-1.5.7-py3-none-any.whl", hash = "sha256:23c57feb1f4fc4373a5bec4331dc398e2b9ae5ab5d62fe24824dc6d9489ea26d"},
+    {file = "pytorch-lightning-1.5.8.tar.gz", hash = "sha256:57e7c9ea3663e5d8416be6a340d3a8d9271eb105fba82b7f7497cf0299880939"},
+    {file = "pytorch_lightning-1.5.8-py3-none-any.whl", hash = "sha256:75783eb6c4d043d95691a341a81e7df2bcb02254779992f86c4276cf6ff3739b"},
 ]
 pytz = [
     {file = "pytz-2021.3-py2.py3-none-any.whl", hash = "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c"},
