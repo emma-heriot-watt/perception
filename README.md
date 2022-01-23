@@ -21,9 +21,6 @@
 
   <br>
 
-  <a href="https://calver.org/">
-    <img alt="CalVer" src="https://img.shields.io/badge/calver-YYYY.MM.DD-22bfda.svg">
-  </a>
 <a href="https://github.com/pre-commit/pre-commit">
   <img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white">
 </a>
@@ -36,13 +33,8 @@
 
 <br>
 
-<a href="https://github.com/ashleve/lightning-hydra-template">
-  <img alt="Lightning-Hydra-Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=gray">
-</a>
-<a href="https://github.com/cjolowicz/cookiecutter-hypermodern-python">
-  <img alt="cookiecutter-hypermodern-python"
-  src="https://img.shields.io/badge/-cookiecutter--hypermodern--python-017F2F?style=flat&logo=github&labelColor=gray">
-</a>
+[![Continuous Integration](https://github.com/emma-simbot/perception/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/emma-simbot/perception/actions/workflows/continuous-integration.yml)
+[![Tests](https://github.com/emma-simbot/perception/actions/workflows/tests.yml/badge.svg)](https://github.com/emma-simbot/perception/actions/workflows/tests.yml)
 
   </div>
 
@@ -56,11 +48,14 @@ Assuming you have [pyenv](https://github.com/pyenv/pyenv) and [Poetry](https://p
 # Use Python 3.9.9 in the project
 pyenv local 3.9.9
 
+# Tell Poetry to use pyenv
+poetry env use $(pyenv which python)
+
 # Install dependencies
 poetry install
 
 # Activate the virtual environment
-poetry bash
+poetry shell
 
 # Install pre-commit hooks
 pre-commit install
@@ -75,7 +70,7 @@ We've tried to keep necessary things as simplistic as possible. However, we need
 This project uses Poetry for **creating virtual environments** and **managing Python packages**. This should be installed globally and can be done by running:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+curl -sSL https://install.python-poetry.org | python3 -
 ```
 
 You can verify it's installed and accessible by running `poetry --version`.

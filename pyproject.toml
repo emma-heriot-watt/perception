@@ -15,7 +15,7 @@ envfile = ".env"
 format = { cmd = "pre-commit run --all-files", help = "Format using pre-commit hooks" }
 typecheck = { cmd = "mypy src/", help = "Check types with mypy" }
 lint = { cmd = "flake8 src/", help = "Lint with flake8" }
-test = "pytest --cov=src"
+test = { cmd = "pytest --cov=src -m 'not slow'", help = "Run fast Python tests" }
 cov-export = "pytest --cov=src --cov-report xml:coverage.xml"
 ## PyTorch with CUDA 11.1. If PyTorch is imported first, importing Tensorflow will detect CUDA + cuDNN bundled with PyTorch
 ## See https://github.com/python-poetry/poetry/issues/2543
@@ -45,13 +45,13 @@ flake8 = "^4.0"
 mypy = "^0.931"
 pytest = "^6.2.5"
 ipykernel = "^6.7.0"
-testfixtures = "^6.18.3"
 pre-commit = "^2.17.0"
 poethepoet = "^0.12.2"
 pytest-cov = "^3.0.0"
 jupyterlab = "^3.2.8"
 pudb = "^2022.1"
 isort = "^5.10.1"
+pytest-cases = "^3.6.8"
 
 [tool.black]
 line-length = 99
@@ -67,6 +67,7 @@ known_first_party = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 filterwarnings = ["ignore::UserWarning", "ignore::DeprecationWarning"]
+markers = ["slow: mark test as slow"]
 
 
 [tool.mypy]
