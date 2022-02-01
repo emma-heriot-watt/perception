@@ -1,4 +1,5 @@
 import warnings
+from argparse import Namespace
 from typing import Any, cast
 
 import hydra
@@ -132,7 +133,7 @@ class TrainModel:
         }
 
         if self.trainer.logger is not None:
-            self.trainer.logger.log_hyperparams(hyperparams)
+            self.trainer.logger.log_hyperparams(cast(Namespace, hyperparams))
 
     @classmethod
     def from_hydra_config(cls, config: DictConfig) -> "TrainModel":
