@@ -76,7 +76,7 @@ pytest-cov = "^3.0.0"
 jupyterlab = "^3.3.2"
 pudb = "^2022.1"
 isort = "^5.10.1"
-pytest-cases = "^3.6.10"
+pytest-cases = "^3.6.11"
 
 [tool.black]
 line-length = 99
