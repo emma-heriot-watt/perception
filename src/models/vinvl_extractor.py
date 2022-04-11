@@ -52,12 +52,16 @@ class VinVLExtractor(LightningModule):
         predictions = self.extractor(batch["img"].to(self.device))
         hook.remove()
         cnn_features = cnn_features[0][0]
+        out = zip(batch["ids"], batch["width"], batch["height"], predictions, cnn_features)
 
-        for b_id, pred, cnn_feats in zip(batch["ids"], predictions, cnn_features):
+        for b_id, width, height, pred, cnn_feats in out:
+            pred = pred.resize((width, height))
             output[b_id] = {
                 "bbox_features": pred.get_field("box_features"),
                 "bbox_coords": pred.bbox,
                 "bbox_probas": pred.get_field("scores_all"),
-                "cnn_features": cnn_feats,
+                "cnn_features": cnn_feats.mean(dim=(-2, -1)),
+                "width": width,
+                "height": height,
             }
         return output

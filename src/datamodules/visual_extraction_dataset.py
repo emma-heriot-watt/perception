@@ -20,6 +20,8 @@ class DatasetReturn(dict[str, Any]):
 
     img: torch.Tensor
     ids: str
+    width: int
+    height: int
 
 
 ImageLoaderType = Literal["cv2", "pil"]
@@ -56,16 +58,20 @@ class ImageDataset(Dataset[DatasetReturn]):
         """Return a sample."""
         fname = self.dataset[idx]
         img = self.image_loader(fname)
+        img_size = img.size
+
         if self.transform is not None:
             img = self.transform(img)
-        return DatasetReturn(img=img, ids=self._make_sample_id(fname))
+        return DatasetReturn(
+            img=img, ids=self._make_sample_id(fname), width=img_size[0], height=img_size[1]
+        )
 
     def _make_loader(self, image_loader: ImageLoaderType) -> Any:
         image_loader_func = None
         if image_loader == "pil":
             image_loader_func = self._pilimage
         elif image_loader == "cv2":
-            image_loader_func = self._cv2Image
+            image_loader_func = self._cv2image
         else:
             raise NotImplementedError(f"Unsupported image loader {image_loader}")
         return image_loader_func
@@ -143,16 +149,19 @@ class VideoFrameDataset(Dataset[DatasetReturn]):
         """Return a sample."""
         fname = self.dataset[idx]
         img = self.image_loader(fname)
+        img_size = img.size
         if self.transform is not None:
             img = self.transform(img)
-        return DatasetReturn(img=img, ids=self._make_sample_id(fname))
+        return DatasetReturn(
+            img=img, ids=self._make_sample_id(fname), width=img_size[0], height=img_size[1]
+        )
 
     def _make_loader(self, image_loader: ImageLoaderType) -> Any:
         image_loader_func = None
         if image_loader == "pil":
             image_loader_func = self._pilimage
         elif image_loader == "cv2":
-            image_loader_func = self._cv2Image
+            image_loader_func = self._cv2image
         else:
             raise NotImplementedError(f"Unsupported image loader {image_loader}")
         return image_loader_func

@@ -62,6 +62,8 @@ overrides = "^6.1.0"
 plotly = "^5.6.0"
 scikit-learn = "^1.0.2"
 opencv-python = "^4.5.5"
+requests = "^2.27.1"
+types-requests = "^2.27.16"
 
 
 [tool.poetry.dev-dependencies]

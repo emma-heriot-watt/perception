@@ -80,7 +80,7 @@ def main() -> None:
     if args.dataset == "images":
         dataset = ImageDataset(input_path=args.input_path, preprocess_transform=transform)
     elif args.dataset == "frames":
-        dataset = VideoFrameDataset(
+        dataset = VideoFrameDataset(  # type: ignore[assignment]
             input_path=args.input_path,
             ann_csv=args.ann_csv,
             ann_type=args.ann_type,
@@ -90,7 +90,7 @@ def main() -> None:
     else:
         raise OSError(f"Unsupported dataset type {args.dataset}")
 
-    dm = PredictDataModule(dataset=dataset, batch_size=args.batch_size)
+    dm = PredictDataModule(dataset=dataset, batch_size=args.batch_size)  # type: ignore[arg-type]
     trainer = Trainer(
         gpus=args.gpus,
         callbacks=[

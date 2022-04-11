@@ -34,5 +34,7 @@ class VisualExtractionCacheCallback(Callback):
                 "bbox_coords": output["bbox_coords"].to("cpu"),
                 "bbox_probas": output["bbox_probas"].to("cpu"),
                 "cnn_features": output["cnn_features"].to("cpu"),
+                "width": output["width"].to("cpu").item(),
+                "height": output["height"].to("cpu").item(),
             }
             torch.save(features_dict, cache_fname)
