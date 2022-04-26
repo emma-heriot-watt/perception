@@ -47,6 +47,7 @@ async def startup_event() -> None:
         cfg.MODEL.DEVICE = "cpu"
 
     cfg.freeze()
+    logger.info(f"Config:{cfg}")
 
     api_store.device = device
 
