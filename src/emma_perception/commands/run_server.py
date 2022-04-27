@@ -4,7 +4,7 @@ from typing import cast
 
 import torch
 import uvicorn
-from fastapi import FastAPI, Response, UploadFile, status
+from fastapi import FastAPI, HTTPException, Response, UploadFile, status
 from maskrcnn_benchmark.config import cfg
 from PIL import Image
 from scene_graph_benchmark.config import sg_cfg
@@ -71,6 +71,20 @@ async def startup_event() -> None:
 async def root(response: Response) -> str:
     """Ping the API to make sure it is responding."""
     response.status_code = status.HTTP_200_OK
+    return "success"
+
+
+@app.post("/update_model_device", status_code=status.HTTP_200_OK)
+async def update_model_device(device: str) -> str:
+    """Update the device used by the model."""
+    try:
+        api_store.extractor.to(torch.device(device))
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to change the model device.",
+        )
+
     return "success"
 
 
