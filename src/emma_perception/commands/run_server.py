@@ -7,6 +7,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Response, UploadFile, status
 from maskrcnn_benchmark.config import cfg
 from PIL import Image
+from pydantic import BaseModel
 from scene_graph_benchmark.config import sg_cfg
 
 from emma_perception.api import ApiSettings, ApiStore, extract_features_for_batch, parse_api_args
@@ -74,15 +75,26 @@ async def root(response: Response) -> str:
     return "success"
 
 
+class DeviceRequestBody(BaseModel):
+    """Pydantic model for the request body when updating the model device.
+
+    This is used because the device is passed as a request body.
+    """
+
+    device: str
+
+
 @app.post("/update_model_device", status_code=status.HTTP_200_OK)
-async def update_model_device(device: str) -> str:
+async def update_model_device(device: DeviceRequestBody) -> str:
     """Update the device used by the model."""
     try:
-        api_store.extractor.to(torch.device(device))
+        api_store.extractor.to(torch.device(device.device))
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to change the model device.",
+            detail="Failed to change the model device from {current_device} to {requested_device}".format(
+                current_device=api_store.extractor.device, requested_device=device.device
+            ),
         )
 
     return "success"
