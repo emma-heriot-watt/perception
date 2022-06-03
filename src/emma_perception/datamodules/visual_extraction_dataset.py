@@ -3,6 +3,7 @@ from typing import Any, Literal, Optional
 
 import cv2
 import torch
+from maskrcnn_benchmark.structures.image_list import to_image_list  # noqa: WPS347
 from PIL import Image, UnidentifiedImageError
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
@@ -180,6 +181,38 @@ class VideoFrameDataset(Dataset[DatasetReturn]):
         return f"{prefix}_{os.path.basename(fname)}"
 
 
+class BatchCollator:
+    """From a list of samples from the dataset, returns the batched images and targets.
+
+    This should be passed to the DataLoader
+    """
+
+    def __init__(self, size_divisible: int = 0) -> None:
+        self.size_divisible = size_divisible
+
+    def __call__(self, batch: list[DatasetReturn]) -> dict[str, Any]:
+        """Creates a batch of images potentially having varying sizes."""
+        images = []
+        img_ids = []
+        width = []
+        height = []
+
+        for elem in batch:
+            images.append(elem["img"])
+            img_ids.append(elem["ids"])
+            width.append(elem["width"])
+            height.append(elem["height"])
+
+        images = to_image_list(images, self.size_divisible)
+
+        return {
+            "img": images,
+            "ids": img_ids,
+            "width": torch.tensor(width),
+            "height": torch.tensor(height),
+        }
+
+
 class PredictDataModule(LightningDataModule):
     """A simple data module for predictions."""
 
@@ -199,6 +232,10 @@ class PredictDataModule(LightningDataModule):
     def predict_dataloader(self) -> DataLoader:  # type: ignore[type-arg]
         """Defines the dataset to make predictions."""
         dataset_predict = DataLoader(
-            self.dataset, self.batch_size, num_workers=self.num_workers, pin_memory=self.pin_memory
+            self.dataset,
+            self.batch_size,
+            num_workers=self.num_workers,
+            pin_memory=self.pin_memory,
+            collate_fn=BatchCollator(),
         )
         return dataset_predict

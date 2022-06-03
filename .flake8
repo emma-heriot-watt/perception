@@ -118,4 +118,5 @@ extend-exclude=
 	.cache/,
 	logs/,
 	storage/,
-	docs/
+	docs/,
+	src/emma_perception/utils/visualizing_image.py

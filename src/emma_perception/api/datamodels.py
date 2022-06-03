@@ -1,10 +1,14 @@
 import argparse
 from dataclasses import dataclass
+from typing import Literal
 
 import torch
 from pydantic import BaseSettings
 
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
+
+
+ClassmapType = Literal["alfred", "original"]
 
 
 class ApiSettings(BaseSettings):
@@ -16,6 +20,8 @@ class ApiSettings(BaseSettings):
     # Use a positive number to index the GPU, or a negative number for the CPU
     device_id: int = -1
     log_level: str = "info"
+    # Dictionary containing the class information for the object detector
+    classmap_type: ClassmapType = "alfred"
 
 
 @dataclass(init=False)

@@ -92,12 +92,15 @@ def main() -> None:
     else:
         raise OSError(f"Unsupported dataset type {args.dataset}")
 
-    dm = PredictDataModule(dataset=dataset, batch_size=args.batch_size)
+    dm = PredictDataModule(
+        dataset=dataset, batch_size=args.batch_size, num_workers=args.num_workers
+    )
     trainer = Trainer(
         gpus=args.gpus,
         callbacks=[
             VisualExtractionCacheCallback(cache_dir=args.cache, cache_suffix=args.cache_suffix)
         ],
+        profiler="advanced",
     )
     trainer.predict(extractor, dm, return_predictions=args.return_predictions)
 

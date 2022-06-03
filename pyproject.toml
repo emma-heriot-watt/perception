@@ -51,11 +51,18 @@ envfile = ".env"
 		pip install git+https://github.com/emma-simbot/scene_graph_benchmark
 		"""
 
-		[tool.poe.tasks.download-model-checkpoint]
+		[tool.poe.tasks.download-model-alfred-checkpoint]
 		help = "Download the relevant model checkpoints from S3"
 		shell = """
-		aws s3 cp s3://emma-simbot/perception/models/X152C4_test_weight_e2/model_final.pth storage/model
+		aws s3 cp s3://emma-simbot/perception/models/X152C4_test_weight_e2/model_final.pth storage/model/alfred_vinvl_model.pth
 		"""
+
+		[tool.poe.tasks.download-model-original-checkpoint]
+		help = "Download the relevant model checkpoints from S3"
+		shell = """
+		aws s3 cp s3://emma-simbot/perception/models/vinvl_original/vinvl_vg_x152c4.pth storage/model/original_vinvl_model.pth
+		"""
+
 
 [tool.poetry.dependencies]
 python = "^3.9"

@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 
 from emma_perception.api.api_dataset import ApiDataset
 from emma_perception.api.datamodels import ApiStore
-from emma_perception.constants import VINVL_ALFRED_CLASS_MAP
+from emma_perception.constants import OBJECT_CLASSMAP
 from emma_perception.datamodels import ExtractedFeaturesAPI
 from emma_perception.models.vinvl_extractor import VinVLExtractor
 
@@ -34,7 +34,7 @@ def get_batch_features(
         bbox_probas = predictions.get_field("scores_all")
         class_labels = bbox_probas.argmax(dim=1).tolist()
         idx_labels = bbox_probas.argmax(dim=1).tolist()
-        class_labels = [VINVL_ALFRED_CLASS_MAP["idx_to_label"][str(idx)] for idx in idx_labels]
+        class_labels = [OBJECT_CLASSMAP["idx_to_label"][str(idx)] for idx in idx_labels]
 
         features = ExtractedFeaturesAPI(
             bbox_features=predictions.get_field("box_features").tolist(),
