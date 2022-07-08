@@ -1,0 +1,1 @@
+from emma_perception.models.attrcnn_global_features import AttrRCNNGlobalFeatures
