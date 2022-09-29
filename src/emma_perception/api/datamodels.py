@@ -8,7 +8,7 @@ from pydantic import BaseSettings
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
 
-ClassmapType = Literal["alfred", "original"]
+ClassmapType = Literal["alfred", "original", "simbot"]
 
 
 class ApiSettings(BaseSettings):
