@@ -1,5 +1,6 @@
 {
 	"label_to_idx": {
+		"Background": 0,
 		"Action Figure": 1,
 		"Apple": 2,
 		"Banana": 3,
@@ -137,6 +138,7 @@
 		"Wire Coil": 135
 	},
 	"idx_to_label": {
+		"0": "Background",
 		"1": "Action Figure",
 		"2": "Apple",
 		"3": "Banana",
