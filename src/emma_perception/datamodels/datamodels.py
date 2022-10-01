@@ -20,3 +20,5 @@ class ExtractedFeaturesAPI(BaseModel):
     bbox_probas: list[list[float]]
     cnn_features: list[float]
     class_labels: list[str]
+    width: int
+    height: int

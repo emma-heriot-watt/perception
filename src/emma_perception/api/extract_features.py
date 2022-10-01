@@ -42,6 +42,8 @@ def get_batch_features(
             bbox_probas=bbox_probas.tolist(),
             cnn_features=cnn_feats[batch_idx].mean(dim=(-2, -1)).tolist(),
             class_labels=class_labels,
+            width=int(batch["width"][batch_idx].item()),
+            height=int(batch["height"][batch_idx].item()),
         )
 
         batch_features.append(features)
