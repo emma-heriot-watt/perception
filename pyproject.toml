@@ -11,58 +11,49 @@ packages = [{ include = "emma_perception", from = "src" }]
 [tool.poe]
 envfile = ".env"
 
-	[tool.poe.tasks]
+[tool.poe.poetry_hooks]
+post_install = "postinstall"
 
-		[tool.poe.tasks.format]
-		help = "Format using the pre-commit hooks"
-		cmd = "pre-commit run --all-files"
+[tool.poe.tasks]
 
-		[tool.poe.tasks.typecheck]
-		help = "Check types with mypy"
-		cmd = "mypy ."
+[tool.poe.tasks.format]
+help = "Format using the pre-commit hooks"
+cmd = "pre-commit run --all-files"
 
-		[tool.poe.tasks.lint]
-		help = "Lint with flake8"
-		cmd = "flake8 ."
+[tool.poe.tasks.typecheck]
+help = "Check types with mypy"
+cmd = "mypy ."
 
-		[tool.poe.tasks.test]
-		help = "Run the fast Python tests"
-		cmd = "pytest --cov=src -m 'not slow'"
+[tool.poe.tasks.lint]
+help = "Lint with flake8"
+cmd = "flake8 ."
 
-		[tool.poe.tasks.test-everything]
-		help = "Run all the tests and get the coverage"
-		cmd = "pytest -v --junitxml=pytest.xml --cov=src -m 'not slow and not multiprocessing'"
+[tool.poe.tasks.test]
+help = "Run the fast Python tests"
+cmd = "pytest --cov=src -m 'not slow'"
 
-		[tool.poe.tasks.update-torch-cuda]
-		## See https://github.com/python-poetry/poetry/issues/2543
-		help = "Update torch to use the latest CUDA version"
-		shell = "python scripts/update_torch_cuda.py"
+[tool.poe.tasks.test-everything]
+help = "Run all the tests and get the coverage"
+cmd = "pytest -v --junitxml=pytest.xml --cov=src -m 'not slow and not multiprocessing'"
 
-		[tool.poe.tasks.outdated]
-		help = 'Show all outdated top-level dependencies'
-		shell = """
+
+[tool.poe.tasks.outdated]
+help = 'Show all outdated top-level dependencies'
+shell = """
 			poetry show --outdated | grep --file=<(poetry show --tree | grep '^\\w' | sed 's/^\\([^ ]*\\).*/^\\1\\\\s/')
 		"""
-		interpreter = "bash"
+interpreter = "bash"
 
-		[tool.poe.tasks.install-everything-else]
-		help = 'Update torch and install maskrcnn-benchmark and scene-graph-benchmark'
-		shell = """
+[[tool.poe.tasks.postinstall]]
+## See https://github.com/python-poetry/poetry/issues/2543
+help = "Update torch to use the latest CUDA version"
+shell = "python scripts/update_torch_cuda.py"
+
+[[tool.poe.tasks.postinstall]]
+help = 'Update torch and install maskrcnn-benchmark and scene-graph-benchmark'
+shell = """
 		pip install git+https://github.com/emma-simbot/scene_graph_benchmark
 		"""
-
-		[tool.poe.tasks.download-model-alfred-checkpoint]
-		help = "Download the relevant model checkpoints from S3"
-		shell = """
-		aws s3 cp s3://emma-simbot/perception/models/X152C4_test_weight_e2/model_final.pth storage/model/alfred_vinvl_model.pth
-		"""
-
-		[tool.poe.tasks.download-model-original-checkpoint]
-		help = "Download the relevant model checkpoints from S3"
-		shell = """
-		aws s3 cp s3://emma-simbot/perception/models/vinvl_original/vinvl_vg_x152c4.pth storage/model/original_vinvl_model.pth
-		"""
-
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -94,7 +85,7 @@ pycocotools = "^2.0.4"
 cityscapesScripts = "^2.2.0"
 
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = "^0.16.1"
 flake8 = "^4.0"
 mypy = "^0.942"
@@ -117,7 +108,7 @@ profile = "black"
 combine_as_imports = true
 lines_after_imports = 2
 line_length = 99
-known_first_party = ["src", "emma_perception"]
+known_first_party = ["emma_perception"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

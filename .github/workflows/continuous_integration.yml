@@ -2,14 +2,9 @@ name: Continuous Integration
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: [WIP]
-    types: [completed]
-    branches-ignore: [main]
+  workflow_call:
   pull_request:
-    branches:
-      - main
-  push:
+    types: [opened, reopened, synchronize, ready_for_review]
     branches:
       - main
 
@@ -20,10 +15,9 @@ jobs:
   changes:
     name: Check for Python file changes
     runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
     outputs:
       python: ${{steps.filter.outputs.python}}
-      mypy: ${{steps.filter.outputs.mypy}}
-      flake8: ${{steps.filter.outputs.flake8}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -35,16 +29,14 @@ jobs:
               - '**/*.py'
               - 'pyproject.toml'
               - 'poetry.lock'
-              - '.github/workflows/**/*.yml'
-            mypy:
+              - '.github/workflows/continuous_integration.yml'
               - '.mypy.ini'
-            flake8:
               - '.flake8'
 
   typecheck:
     name: Type check Python
     needs: [changes]
-    if: ${{needs.changes.outputs.python == 'true' || needs.changes.outputs.mypy == 'true'}}
+    if: ${{needs.changes.outputs.python == 'true' && !github.event.pull_request.draft }}
     runs-on: self-hosted
     steps:
       - name: Checkout repository
@@ -54,7 +46,7 @@ jobs:
         uses: reviewdog/action-setup@v1
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -63,7 +55,6 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           git config --global url."https://${PAT}@github.com/".insteadOf "https://github.com/"
-
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
@@ -79,7 +70,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install
+          poetry install --all-extras
 
       - name: Load mypy cache
         uses: tespkg/actions-cache@v1
@@ -101,7 +92,6 @@ jobs:
         run: |
           exit_val="0"
           [[ $GITHUB_EVENT_NAME == "pull_request" ]] && reporter="github-pr-review" || reporter="github-check"
-
           poetry run mypy \
             --show-column-numbers \
             --show-absolute-path \
@@ -111,7 +101,6 @@ jobs:
             -filter-mode=nofilter \
             -fail-on-error \
             -reporter="${reporter}" || exit_val="$?"
-
           if [[ "${exit_val}" -ne '0' ]]; then
             exit 1
           fi
@@ -119,7 +108,7 @@ jobs:
   lint:
     name: Lint Python
     needs: [changes]
-    if: ${{needs.changes.outputs.python == 'true' || needs.changes.outputs.flake8 == 'true'}}
+    if: ${{needs.changes.outputs.python == 'true' && !github.event.pull_request.draft }}
     runs-on: self-hosted
     steps:
       - name: Checkout repository
@@ -129,7 +118,7 @@ jobs:
         uses: reviewdog/action-setup@v1
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -138,7 +127,6 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           git config --global url."https://${PAT}@github.com/".insteadOf "https://github.com/"
-
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
@@ -154,7 +142,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install
+          poetry install --all-extras
 
       - name: Run flake8
         env:
@@ -163,7 +151,6 @@ jobs:
         run: |
           exit_val="0"
           [[ $GITHUB_EVENT_NAME == "pull_request" ]] && reporter="github-pr-review" || reporter="github-check"
-
           poetry run flake8 \
             --format=default . 2>&1 | reviewdog \
             -f=pep8 \
@@ -171,7 +158,6 @@ jobs:
             -fail-on-error \
             -filter-mode=file \
             -reporter="${reporter}" || exit_val="$?"
-
           if [[ "${exit_val}" -ne '0' ]]; then
             exit 1
           fi
@@ -179,19 +165,25 @@ jobs:
   format:
     name: Format
     runs-on: self-hosted
+    if: ${{ !github.event.pull_request.draft }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Configure GitHub to download private repos
+        env:
+          PAT: ${{ secrets.PAT }}
+        run: |
+          git config --global url."https://${PAT}@github.com/".insteadOf "https://github.com/"
 
       - name: Install pre-commit
         run: |
           pip install pre-commit
-
       - name: Load cached pre-commit environment
         uses: tespkg/actions-cache@v1
         id: pre-commit-cache
@@ -209,7 +201,6 @@ jobs:
         run: |
           git add .pre-commit-config.yaml
           pre-commit run --color=always --all-files
-
       - name: Annotate any changes using reviewdog
         if: ${{ failure() }}
         id: reviewdog-suggester

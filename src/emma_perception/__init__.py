@@ -1,0 +1,1 @@
+from emma_perception._version import __version__
