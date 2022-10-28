@@ -44,7 +44,7 @@ shell = """
 		"""
 interpreter = "bash"
 
-[[tool.poe.tasks.postinstall]]
+[tool.poe.tasks.install-correct-torch-wheel]
 ## See https://github.com/python-poetry/poetry/issues/2543
 help = "Update torch to use the latest CUDA version"
 shell = "python scripts/update_torch_cuda.py"
