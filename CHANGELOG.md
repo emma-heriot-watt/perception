@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.0](https://github.com/emma-simbot/perception/compare/v1.1.0...v1.2.0) (2022-11-19)
+
+
+### Features
+
+* Change simbot classmap path ([#187](https://github.com/emma-simbot/perception/issues/187)) ([66dd978](https://github.com/emma-simbot/perception/commit/66dd9788b67b1f1af372a90973ff1e67c327f0b6))
+
 ## [1.1.0](https://github.com/emma-simbot/perception/compare/v1.0.0...v1.1.0) (2022-11-04)
 
 
