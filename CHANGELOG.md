@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.0](https://github.com/emma-simbot/perception/compare/v1.2.0...v1.3.0) (2022-11-28)
+
+
+### Features
+
+* use custom classmap ([#189](https://github.com/emma-simbot/perception/issues/189)) ([864a274](https://github.com/emma-simbot/perception/commit/864a2749cbb168f96681d8790edbce424b0f0269))
+
 ## [1.2.0](https://github.com/emma-simbot/perception/compare/v1.1.0...v1.2.0) (2022-11-19)
 
 
