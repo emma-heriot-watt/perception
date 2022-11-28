@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.0](https://github.com/emma-simbot/perception/compare/v1.3.0...v1.4.0) (2022-11-28)
+
+
+### Features
+
+* Add simbot custom model config ([#191](https://github.com/emma-simbot/perception/issues/191)) ([1793f33](https://github.com/emma-simbot/perception/commit/1793f33a10c65d542b01f416b2dbfdfb87847ba5))
+
 ## [1.3.0](https://github.com/emma-simbot/perception/compare/v1.2.0...v1.3.0) (2022-11-28)
 
 
