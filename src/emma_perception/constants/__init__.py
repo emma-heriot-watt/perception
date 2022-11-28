@@ -19,8 +19,11 @@ class AlfredClassMap(TypedDict):
 
 VINVL_ALFRED_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath("vinvl_x152c4_alfred_classmap.json")
 VINVL_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath("vinvl_x152c4_classmap.json")
-VINVL_SIMBOT_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath("vinvl_x152c4_simbot_classmap.json")
+# VINVL_SIMBOT_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath("vinvl_x152c4_simbot_classmap.json")
 # VINVL_SIMBOT_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath("vinvl_x152c4_simbot_classmap_v124.json")
+VINVL_SIMBOT_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath(
+    "vinvl_x152c4_simbot_classmap_v124_customised.json"
+)
 
 
 def _classmap(classmap_type: ClassmapType) -> AlfredClassMap:
