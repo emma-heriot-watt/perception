@@ -23,17 +23,6 @@ class ApiSettings(BaseSettings):
     # Dictionary containing the class information for the object detector
     classmap_type: ClassmapType = "alfred"
 
-    # Observability
-    traces_to_opensearch: bool = False
-    log_to_cloudwatch: bool = False
-
-    aws_profile: str = "TeamProfile"
-    watchtower_log_group_name: str = "simbot_challenge"
-    watchtower_log_stream_name: str = "perception/{machine_name}/{logger_name}/{process_id}"
-
-    otlp_endpoint: str = "localhost:4317"
-    opensearch_service_name: str = "perception"
-
 
 @dataclass(init=False)
 class ApiStore:

@@ -5,12 +5,8 @@ from typing import Optional, Union
 from PIL.Image import Image
 from torch.utils.data import Dataset
 
-from emma_perception.api.instrumentation import get_tracer
 from emma_perception.datamodules.visual_extraction_dataset import DatasetReturn
 from emma_perception.models.vinvl_extractor import VinVLTransform
-
-
-tracer = get_tracer(__name__)
 
 
 class ApiDataset(Dataset[DatasetReturn]):
@@ -36,8 +32,7 @@ class ApiDataset(Dataset[DatasetReturn]):
         img_size = img.size
 
         if self.transform is not None:
-            with tracer.start_as_current_span("Transform image"):
-                img = self.transform(img)
+            img = self.transform(img)
 
         return DatasetReturn(
             img=img, ids=self._make_sample_id(), width=img_size[0], height=img_size[1]
