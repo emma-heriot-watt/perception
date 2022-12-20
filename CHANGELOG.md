@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.0](https://github.com/emma-simbot/perception/compare/v1.4.0...v1.5.0) (2022-12-20)
+
+
+### Features
+
+* setup tracing for the feature extractor endpoint ([#198](https://github.com/emma-simbot/perception/issues/198)) ([b86065d](https://github.com/emma-simbot/perception/commit/b86065d41435cb943fd14f2e423eabf9ac44482e))
+
 ## [1.4.0](https://github.com/emma-simbot/perception/compare/v1.3.0...v1.4.0) (2022-11-28)
 
 
