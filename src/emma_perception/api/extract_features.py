@@ -5,25 +5,24 @@ from PIL import Image
 from torch.utils.data import DataLoader
 
 from emma_perception.api.api_dataset import ApiDataset
-from emma_perception.api.datamodels import ApiStore
 from emma_perception.constants import OBJECT_CLASSMAP
 from emma_perception.datamodels import ExtractedFeaturesAPI
-from emma_perception.models.vinvl_extractor import VinVLExtractor
+from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
 
+@torch.inference_mode()
 def get_batch_features(
     extractor: VinVLExtractor, batch: dict[str, torch.Tensor], device: torch.device
 ) -> list[ExtractedFeaturesAPI]:
     """Low-level implementation of the visual feature extraction process."""
-    with torch.no_grad():
-        cnn_features: list[torch.Tensor] = []
-        hook = extractor.extractor.backbone.register_forward_hook(
-            lambda module, inp, output: cnn_features.append(output)
-        )
+    cnn_features: list[torch.Tensor] = []
+    hook = extractor.extractor.backbone.register_forward_hook(
+        lambda module, inp, output: cnn_features.append(output)
+    )
 
-        batch_predictions = extractor.extractor(batch["img"].to(device))
-        hook.remove()
-        cnn_feats = cnn_features[0][0]
+    batch_predictions = extractor.extractor(batch["img"].to(device))
+    hook.remove()
+    cnn_feats = cnn_features[0][0]
 
     batch_features = []
 
@@ -52,15 +51,19 @@ def get_batch_features(
 
 
 def extract_features_for_batch(
-    images: Union[Image.Image, list[Image.Image]], api_store: ApiStore, batch_size: int = 2
+    images: Union[Image.Image, list[Image.Image]],
+    extractor: VinVLExtractor,
+    transform: VinVLTransform,
+    device: torch.device,
+    batch_size: int = 2,
 ) -> list[ExtractedFeaturesAPI]:
     """Extracts visual features for a batch of images."""
-    dataset = ApiDataset(images, transform=api_store.transform)
+    dataset = ApiDataset(images, transform=transform)
     loader = DataLoader(dataset, batch_size=batch_size)
 
     all_features = []
 
     for batch in loader:
-        all_features.extend(get_batch_features(api_store.extractor, batch, api_store.device))
+        all_features.extend(get_batch_features(extractor, batch, device))
 
     return all_features

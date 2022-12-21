@@ -64,7 +64,7 @@ pydantic = { extras = ["dotenv"], version = "^1.9.0" }
 rich = "^12.2.0"
 overrides = "^6.1.0"
 requests = "^2.27.1"
-fastapi = { extras = ["all"], version = "^0.75.2" }
+fastapi = "^0.88.0"
 h5py = "^3.6.0"
 nltk = "^3.7"
 joblib = "^1.1.0"
@@ -80,6 +80,8 @@ timm = "^0.5.4"
 pycocotools = "^2.0.4"
 cityscapesScripts = "^2.2.0"
 opencv-python = "^4.5.5"
+ray = {extras = ["serve"], version = "^2.2.0"}
+emma-common = {git = "https://github.com/emma-simbot/common"}
 
 
 [tool.poetry.group.dev.dependencies]
@@ -95,6 +97,7 @@ pudb = "^2022.1"
 isort = "^5.10.1"
 pytest-cases = "^3.6.11"
 types-requests = "^2.27.16"
+black = "^22.12.0"
 
 [tool.poetry.group.random.dependencies]
 jupyterlab = "^3.3.3"
@@ -111,7 +114,7 @@ profile = "black"
 combine_as_imports = true
 lines_after_imports = 2
 line_length = 99
-known_first_party = ["emma_perception"]
+known_first_party = ["emma_*"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
