@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.0](https://github.com/emma-simbot/perception/compare/v1.5.1...v1.6.0) (2022-12-21)
+
+
+### Features
+
+* Using Ray Serve to serve Perception ([#200](https://github.com/emma-simbot/perception/issues/200)) ([e83a960](https://github.com/emma-simbot/perception/commit/e83a9602badbf60df1fc7741a668d2ca34508f3b))
+
 ## [1.5.1](https://github.com/emma-simbot/perception/compare/v1.5.0...v1.5.1) (2022-12-20)
 
 
