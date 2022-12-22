@@ -23,10 +23,6 @@ class ApiSettings(BaseSettings):
     # Dictionary containing the class information for the object detector
     classmap_type: ClassmapType = "alfred"
 
-    # deployment options
-    num_replicas: int = 1
-    num_gpus: float = 1.0 / num_replicas
-
 
 @dataclass(init=False)
 class ApiStore:
