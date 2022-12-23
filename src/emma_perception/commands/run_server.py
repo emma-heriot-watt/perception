@@ -1,9 +1,16 @@
-import logging
+import sys
 from io import BytesIO
-from typing import cast
 
 import torch
 import uvicorn
+from emma_common.api.instrumentation import instrument_app
+from emma_common.aws.cloudwatch import add_cloudwatch_handler_to_logger
+from emma_common.logging import (
+    InstrumentedInterceptHandler,
+    logger,
+    setup_logging,
+    setup_rich_logging,
+)
 from fastapi import FastAPI, HTTPException, Response, UploadFile, status
 from maskrcnn_benchmark.config import cfg
 from PIL import Image
@@ -13,9 +20,6 @@ from scene_graph_benchmark.config import sg_cfg
 from emma_perception.api import ApiSettings, ApiStore, extract_features_for_batch, parse_api_args
 from emma_perception.datamodels import ExtractedFeaturesAPI
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
-
-
-logger = logging.getLogger("uvicorn.error")
 
 
 settings = ApiSettings()
@@ -119,9 +123,9 @@ async def get_features_for_image(input_file: UploadFile) -> ExtractedFeaturesAPI
         coordinates, and their probabilities as well as the global cnn features.
     """
     image_bytes = await input_file.read()
-    pil_image = Image.open(BytesIO(cast(bytes, image_bytes)))
+    pil_image = Image.open(BytesIO(image_bytes))
 
-    features = extract_features_for_batch(pil_image, api_store)
+    features = extract_features_for_batch(pil_image, api_store, settings.batch_size)
 
     return features[0]
 
@@ -152,15 +156,30 @@ async def get_features_for_images(images: list[UploadFile]) -> list[ExtractedFea
     for input_file in images:
         byte_image = await input_file.read()
 
-        io_image = BytesIO(cast(bytes, byte_image))
+        io_image = BytesIO(byte_image)
         io_image.seek(0)
         open_images.append(Image.open(io_image))
 
-    return extract_features_for_batch(open_images, api_store)
+    return extract_features_for_batch(open_images, api_store, settings.batch_size)
 
 
 def main() -> None:
     """Run the API, exactly the same as the way TEACh does it."""
+    if settings.traces_to_opensearch:
+        instrument_app(app, settings.opensearch_service_name, settings.otlp_endpoint)
+        setup_logging(sys.stdout, InstrumentedInterceptHandler())
+    else:
+        setup_rich_logging(rich_traceback_show_locals=False)
+
+    if settings.log_to_cloudwatch:
+        add_cloudwatch_handler_to_logger(
+            boto3_profile_name=settings.aws_profile,
+            log_stream_name=settings.watchtower_log_stream_name,
+            log_group_name=settings.watchtower_log_group_name,
+            send_interval=1,
+            enable_trace_logging=settings.traces_to_opensearch,
+        )
+
     uvicorn.run(
         app,
         host=settings.host,

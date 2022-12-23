@@ -6,16 +6,21 @@ from torch.utils.data import DataLoader
 
 from emma_perception.api.api_dataset import ApiDataset
 from emma_perception.api.datamodels import ApiStore
+from emma_perception.api.instrumentation import get_tracer
 from emma_perception.constants import OBJECT_CLASSMAP
 from emma_perception.datamodels import ExtractedFeaturesAPI
 from emma_perception.models.vinvl_extractor import VinVLExtractor
 
 
+tracer = get_tracer(__name__)
+
+
+@torch.inference_mode()
 def get_batch_features(
     extractor: VinVLExtractor, batch: dict[str, torch.Tensor], device: torch.device
 ) -> list[ExtractedFeaturesAPI]:
     """Low-level implementation of the visual feature extraction process."""
-    with torch.no_grad():
+    with tracer.start_as_current_span("Model inference for one batch"):
         cnn_features: list[torch.Tensor] = []
         hook = extractor.extractor.backbone.register_forward_hook(
             lambda module, inp, output: cnn_features.append(output)
@@ -55,12 +60,14 @@ def extract_features_for_batch(
     images: Union[Image.Image, list[Image.Image]], api_store: ApiStore, batch_size: int = 2
 ) -> list[ExtractedFeaturesAPI]:
     """Extracts visual features for a batch of images."""
-    dataset = ApiDataset(images, transform=api_store.transform)
-    loader = DataLoader(dataset, batch_size=batch_size)
+    with tracer.start_as_current_span("Building data loader"):
+        dataset = ApiDataset(images, transform=api_store.transform)
+        loader = DataLoader(dataset, batch_size=batch_size)
 
     all_features = []
 
-    for batch in loader:
-        all_features.extend(get_batch_features(api_store.extractor, batch, api_store.device))
+    with tracer.start_as_current_span("Extracting features for all batches"):
+        for batch in loader:
+            all_features.extend(get_batch_features(api_store.extractor, batch, api_store.device))
 
     return all_features
