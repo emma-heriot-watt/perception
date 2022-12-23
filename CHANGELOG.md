@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.0](https://github.com/emma-simbot/perception/compare/v1.6.1...v1.7.0) (2022-12-23)
+
+
+### Features
+
+* added support for tracing ([#203](https://github.com/emma-simbot/perception/issues/203)) ([7529955](https://github.com/emma-simbot/perception/commit/7529955c3e39101c1618f1499ea5238ebd98d61f))
+
 ## [1.6.1](https://github.com/emma-simbot/perception/compare/v1.6.0...v1.6.1) (2022-12-22)
 
 
