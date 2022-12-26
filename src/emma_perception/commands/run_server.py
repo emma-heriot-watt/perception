@@ -11,21 +11,22 @@ from emma_common.logging import (
     setup_logging,
     setup_rich_logging,
 )
-from fastapi import FastAPI, HTTPException, Response, UploadFile, status
+from fastapi import FastAPI, HTTPException, ORJSONResponse, Response, UploadFile, status
 from maskrcnn_benchmark.config import cfg
 from PIL import Image
 from pydantic import BaseModel
 from scene_graph_benchmark.config import sg_cfg
 
 from emma_perception.api import ApiSettings, ApiStore, extract_features_for_batch, parse_api_args
-from emma_perception.datamodels import ExtractedFeaturesAPI
+from emma_perception.api.instrumentation import get_tracer
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
+
+tracer = get_tracer(__name__)
 
 settings = ApiSettings()
 api_store = ApiStore()
 app = FastAPI()
-logger.info("Initializing EMMA Perception API")
 
 
 @app.on_event("startup")
@@ -104,8 +105,8 @@ async def update_model_device(device: DeviceRequestBody) -> str:
     return "success"
 
 
-@app.post("/features", response_model=ExtractedFeaturesAPI)
-async def get_features_for_image(input_file: UploadFile) -> ExtractedFeaturesAPI:
+@app.post("/features", response_model=ORJSONResponse)
+async def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
     """Endpoint for receiving features for a binary image.
 
     Example:
@@ -122,16 +123,20 @@ async def get_features_for_image(input_file: UploadFile) -> ExtractedFeaturesAPI
         features (ExtractedFeaturesAPI): A pydantic BaseModel with the features of the bounding boxes
         coordinates, and their probabilities as well as the global cnn features.
     """
-    image_bytes = await input_file.read()
-    pil_image = Image.open(BytesIO(image_bytes))
+    with tracer.start_as_current_span("Load image"):
+        image_bytes = await input_file.read()
+        pil_image = Image.open(BytesIO(image_bytes))
 
     features = extract_features_for_batch(pil_image, api_store, settings.batch_size)
 
-    return features[0]
+    with tracer.start_as_current_span("Build response"):
+        repsonse_content = features[0].dict()
+
+    return ORJSONResponse(repsonse_content)
 
 
-@app.post("/batch_features")
-async def get_features_for_images(images: list[UploadFile]) -> list[ExtractedFeaturesAPI]:
+@app.post("/batch_features", response_class=ORJSONResponse)
+async def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
     """Endpoint for receiving features for a batch of binary images.
 
     Example:
@@ -151,16 +156,22 @@ async def get_features_for_images(images: list[UploadFile]) -> list[ExtractedFea
         features (ExtractedFeaturesAPI): A pydantic BaseModel with the features of the bounding boxes
         coordinates, and their probabilities as well as the global cnn features.
     """
-    open_images = []
+    open_images: list[Image.Image] = []
 
-    for input_file in images:
-        byte_image = await input_file.read()
+    with tracer.start_as_current_span("Open images"):
+        for input_file in images:
+            byte_image = await input_file.read()
 
-        io_image = BytesIO(byte_image)
-        io_image.seek(0)
-        open_images.append(Image.open(io_image))
+            io_image = BytesIO(byte_image)
+            io_image.seek(0)
+            open_images.append(Image.open(io_image))
 
-    return extract_features_for_batch(open_images, api_store, settings.batch_size)
+    extracted_features = extract_features_for_batch(open_images, api_store, settings.batch_size)
+
+    with tracer.start_as_current_span("Build response"):
+        response_content = [feature.dict() for feature in extracted_features]
+
+    return ORJSONResponse(response_content)
 
 
 def main() -> None:

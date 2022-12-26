@@ -81,6 +81,7 @@ pycocotools = "^2.0.4"
 cityscapesScripts = "^2.2.0"
 opencv-python = "^4.5.5"
 emma-common = {git = "https://github.com/emma-simbot/common"}
+orjson = "^3.8.3"
 
 
 [tool.poetry.group.dev.dependencies]
