@@ -13,16 +13,17 @@ from emma_common.logging import (
 )
 from fastapi import FastAPI, HTTPException, ORJSONResponse, Response, UploadFile, status
 from maskrcnn_benchmark.config import cfg
+from opentelemetry import trace
 from PIL import Image
 from pydantic import BaseModel
 from scene_graph_benchmark.config import sg_cfg
 
+from emma_perception._version import __version__  # noqa: WPS436
 from emma_perception.api import ApiSettings, ApiStore, extract_features_for_batch, parse_api_args
-from emma_perception.api.instrumentation import get_tracer
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
 
-tracer = get_tracer(__name__)
+tracer = trace.get_tracer(__name__)
 
 settings = ApiSettings()
 api_store = ApiStore()
@@ -177,7 +178,13 @@ async def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
 def main() -> None:
     """Run the API, exactly the same as the way TEACh does it."""
     if settings.traces_to_opensearch:
-        instrument_app(app, settings.opensearch_service_name, settings.otlp_endpoint)
+        instrument_app(
+            app,
+            otlp_endpoint=settings.otlp_endpoint,
+            service_name=settings.opensearch_service_name,
+            service_version=__version__,
+            service_namespace="SimBot",
+        )
         setup_logging(sys.stdout, InstrumentedInterceptHandler())
     else:
         setup_rich_logging(rich_traceback_show_locals=False)

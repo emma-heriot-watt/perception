@@ -1,18 +1,18 @@
 from typing import Union
 
 import torch
+from opentelemetry import trace
 from PIL import Image
 from torch.utils.data import DataLoader
 
 from emma_perception.api.api_dataset import ApiDataset
 from emma_perception.api.datamodels import ApiStore
-from emma_perception.api.instrumentation import get_tracer
 from emma_perception.constants import OBJECT_CLASSMAP
 from emma_perception.datamodels import ExtractedFeaturesAPI
 from emma_perception.models.vinvl_extractor import VinVLExtractor
 
 
-tracer = get_tracer(__name__)
+tracer = trace.get_tracer(__name__)
 
 
 @tracer.start_as_current_span("Extract features for one batch")
