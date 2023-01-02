@@ -11,7 +11,8 @@ from emma_common.logging import (
     setup_logging,
     setup_rich_logging,
 )
-from fastapi import FastAPI, HTTPException, ORJSONResponse, Response, UploadFile, status
+from fastapi import FastAPI, HTTPException, Response, UploadFile, status
+from fastapi.responses import ORJSONResponse
 from maskrcnn_benchmark.config import cfg
 from opentelemetry import trace
 from PIL import Image
