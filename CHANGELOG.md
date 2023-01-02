@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.8.0](https://github.com/emma-simbot/perception/compare/v1.7.0...v1.8.0) (2023-01-02)
+
+
+### Features
+
+* **telemetry:** include instrumentation and tracking of metrics for requests and the system ([8ae3643](https://github.com/emma-simbot/perception/commit/8ae3643db9bcb85d3c2ca4b853094da0487a4a5b))
+* **telemetry:** More fine-grained tracing during feature extraction ([0f2b513](https://github.com/emma-simbot/perception/commit/0f2b513a3c045db0c2f35c4493067d3815eb9c1d))
+* use orjson to build response and add tracing ([435e89b](https://github.com/emma-simbot/perception/commit/435e89b47cd40ed8883eb070c434d87c64d365d2))
+
+
+### Bug Fixes
+
+* fastapi ORJSONResponse import ([ab3fe3d](https://github.com/emma-simbot/perception/commit/ab3fe3d912e74299f2336395851f06fcd4d8b9df))
+
 ## [1.7.0](https://github.com/emma-simbot/perception/compare/v1.6.1...v1.7.0) (2022-12-23)
 
 
