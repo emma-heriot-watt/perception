@@ -107,7 +107,7 @@ async def update_model_device(device: DeviceRequestBody) -> str:
     return "success"
 
 
-@app.post("/features", response_model=ORJSONResponse)
+@app.post("/features", response_class=ORJSONResponse)
 async def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
     """Endpoint for receiving features for a binary image.
 
