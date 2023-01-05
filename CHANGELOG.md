@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.8.1](https://github.com/emma-simbot/perception/compare/v1.8.0...v1.8.1) (2023-01-05)
+
+
+### Bug Fixes
+
+* Change response_model to response_class ([#206](https://github.com/emma-simbot/perception/issues/206)) ([75119d8](https://github.com/emma-simbot/perception/commit/75119d89277ad72d5527801f6110e4c074db0438))
+
 ## [1.8.0](https://github.com/emma-simbot/perception/compare/v1.7.0...v1.8.0) (2023-01-02)
 
 
