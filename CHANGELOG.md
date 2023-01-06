@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.8.2](https://github.com/emma-simbot/perception/compare/v1.8.1...v1.8.2) (2023-01-06)
+
+
+### Bug Fixes
+
+* pin numpy to `<1.24` because deprecations break legacy code ([dfe3b47](https://github.com/emma-simbot/perception/commit/dfe3b47dda8518c3ab9376aba732be8fda6af3f0)), closes [#208](https://github.com/emma-simbot/perception/issues/208)
+
 ## [1.8.1](https://github.com/emma-simbot/perception/compare/v1.8.0...v1.8.1) (2023-01-05)
 
 
