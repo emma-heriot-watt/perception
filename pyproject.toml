@@ -97,8 +97,6 @@ pudb = "^2022.1"
 isort = "^5.10.1"
 pytest-cases = "^3.6.11"
 types-requests = "^2.27.16"
-black = "^23.1.0"
-codetiming = "^1.4.0"
 
 [tool.poetry.group.random.dependencies]
 jupyterlab = "^3.3.3"
