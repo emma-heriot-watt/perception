@@ -108,7 +108,7 @@ async def update_model_device(device: DeviceRequestBody) -> str:
 
 
 @app.post("/features", response_class=ORJSONResponse)
-async def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
+def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
     """Endpoint for receiving features for a binary image.
 
     Example:
@@ -126,7 +126,7 @@ async def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
         coordinates, and their probabilities as well as the global cnn features.
     """
     with tracer.start_as_current_span("Load image"):
-        image_bytes = await input_file.read()
+        image_bytes = input_file.read()
         pil_image = Image.open(BytesIO(image_bytes))
 
     features = extract_features_for_batch(pil_image, api_store, settings.batch_size)
@@ -138,7 +138,7 @@ async def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
 
 
 @app.post("/batch_features", response_class=ORJSONResponse)
-async def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
+def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
     """Endpoint for receiving features for a batch of binary images.
 
     Example:
@@ -162,8 +162,7 @@ async def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
 
     with tracer.start_as_current_span("Open images"):
         for input_file in images:
-            byte_image = await input_file.read()
-
+            byte_image = input_file.read()
             io_image = BytesIO(byte_image)
             io_image.seek(0)
             open_images.append(Image.open(io_image))
