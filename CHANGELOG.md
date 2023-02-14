@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.9.0](https://github.com/emma-simbot/perception/compare/v1.8.2...v1.9.0) (2023-02-14)
+
+
+### Features
+
+* Include object entities ([#223](https://github.com/emma-simbot/perception/issues/223)) ([c0b9d97](https://github.com/emma-simbot/perception/commit/c0b9d974c9acd0a97e71c7b643e920df9dac50bf))
+
+
+### Bug Fixes
+
+* change endpoints to be non-asynchronous ([#221](https://github.com/emma-simbot/perception/issues/221)) ([57f9668](https://github.com/emma-simbot/perception/commit/57f9668aaa899d5932ff13f3cab629cbc701d220))
+
 ## [1.8.2](https://github.com/emma-simbot/perception/compare/v1.8.1...v1.8.2) (2023-01-06)
 
 
