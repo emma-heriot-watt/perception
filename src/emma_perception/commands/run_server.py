@@ -21,6 +21,8 @@ from scene_graph_benchmark.config import sg_cfg
 
 from emma_perception._version import __version__  # noqa: WPS436
 from emma_perception.api import ApiSettings, ApiStore, extract_features_for_batch, parse_api_args
+from emma_perception.constants import SIMBOT_ENTITY_CLASSIFER_CENTROID_PATH
+from emma_perception.models.simbot_entity_classifier import SimBotEntityClassifier
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
 
@@ -69,6 +71,8 @@ async def startup_event() -> None:
 
     api_store.extractor = extractor
     api_store.transform = transform
+    if settings.classmap_type == "simbot":
+        api_store.entity_classifier = SimBotEntityClassifier(SIMBOT_ENTITY_CLASSIFER_CENTROID_PATH)
 
     logger.info("Setup complete!")
 
@@ -126,7 +130,7 @@ def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
         coordinates, and their probabilities as well as the global cnn features.
     """
     with tracer.start_as_current_span("Load image"):
-        image_bytes = input_file.read()
+        image_bytes = input_file.file.read()
         pil_image = Image.open(BytesIO(image_bytes))
 
     features = extract_features_for_batch(pil_image, api_store, settings.batch_size)
@@ -162,7 +166,7 @@ def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
 
     with tracer.start_as_current_span("Open images"):
         for input_file in images:
-            byte_image = input_file.read()
+            byte_image = input_file.file.read()
             io_image = BytesIO(byte_image)
             io_image.seek(0)
             open_images.append(Image.open(io_image))

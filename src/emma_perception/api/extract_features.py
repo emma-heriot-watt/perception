@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 import torch
 from opentelemetry import trace
@@ -9,6 +9,7 @@ from emma_perception.api.api_dataset import ApiDataset
 from emma_perception.api.datamodels import ApiStore
 from emma_perception.constants import OBJECT_CLASSMAP
 from emma_perception.datamodels import ExtractedFeaturesAPI
+from emma_perception.models.simbot_entity_classifier import SimBotEntityClassifier
 from emma_perception.models.vinvl_extractor import VinVLExtractor
 
 
@@ -18,7 +19,10 @@ tracer = trace.get_tracer(__name__)
 @tracer.start_as_current_span("Extract features for one batch")
 @torch.inference_mode()
 def get_batch_features(
-    extractor: VinVLExtractor, batch: dict[str, torch.Tensor], device: torch.device
+    extractor: VinVLExtractor,
+    batch: dict[str, torch.Tensor],
+    device: torch.device,
+    entity_classifier: Optional[SimBotEntityClassifier] = None,
 ) -> list[ExtractedFeaturesAPI]:
     """Low-level implementation of the visual feature extraction process."""
     with tracer.start_as_current_span("Inference step"):
@@ -43,13 +47,18 @@ def get_batch_features(
             bbox_probas = predictions.get_field("scores_all")
             idx_labels = bbox_probas.argmax(dim=1).tolist()
             class_labels = [OBJECT_CLASSMAP["idx_to_label"][str(idx)] for idx in idx_labels]
+            bbox_features = predictions.get_field("box_features").tolist()
+            entity_labels = None
+            if entity_classifier is not None:
+                entity_labels = entity_classifier(bbox_features, class_labels)
 
             features = ExtractedFeaturesAPI(
-                bbox_features=predictions.get_field("box_features").tolist(),
+                bbox_features=bbox_features,
                 bbox_coords=predictions.bbox.tolist(),
                 bbox_probas=bbox_probas.tolist(),
                 cnn_features=cnn_feats[batch_idx].mean(dim=(-2, -1)).tolist(),
                 class_labels=class_labels,
+                entity_labels=entity_labels,
                 width=int(batch["width"][batch_idx].item()),
                 height=int(batch["height"][batch_idx].item()),
             )
@@ -71,6 +80,10 @@ def extract_features_for_batch(
     all_features: list[ExtractedFeaturesAPI] = []
 
     for batch in loader:
-        all_features.extend(get_batch_features(api_store.extractor, batch, api_store.device))
+        all_features.extend(
+            get_batch_features(
+                api_store.extractor, batch, api_store.device, api_store.entity_classifier
+            )
+        )
 
     return all_features

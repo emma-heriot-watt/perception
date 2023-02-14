@@ -24,6 +24,7 @@ VINVL_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath("vinvl_x152c4_classmap.json")
 VINVL_SIMBOT_CLASS_MAP_PATH = CONSTANTS_DIR_PATH.joinpath(
     "vinvl_x152c4_simbot_classmap_v124_customised.json"
 )
+SIMBOT_ENTITY_CLASSIFER_CENTROID_PATH = CONSTANTS_DIR_PATH.joinpath("entity_centroids.pt")
 
 
 def _classmap(classmap_type: ClassmapType) -> AlfredClassMap:

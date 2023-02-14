@@ -1,3 +1,5 @@
+from typing import Optional
+
 import torch
 from pydantic import BaseModel
 
@@ -19,6 +21,7 @@ class ExtractedFeaturesAPI(BaseModel):
     bbox_coords: list[list[float]]
     bbox_probas: list[list[float]]
     cnn_features: list[float]
+    entity_labels: Optional[list[str]] = None
     class_labels: list[str]
     width: int
     height: int
