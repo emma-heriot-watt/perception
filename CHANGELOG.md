@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.0](https://github.com/emma-simbot/perception/compare/v1.9.0...v1.10.0) (2023-02-15)
+
+
+### Features
+
+* optimised perception using torch response ([#224](https://github.com/emma-simbot/perception/issues/224)) ([831c680](https://github.com/emma-simbot/perception/commit/831c6800a8210dfa64ef53d00741c28d912ffbfb))
+
 ## [1.9.0](https://github.com/emma-simbot/perception/compare/v1.8.2...v1.9.0) (2023-02-14)
 
 
