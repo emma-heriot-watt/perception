@@ -4,6 +4,7 @@ from io import BytesIO
 import torch
 import uvicorn
 from emma_common.api.instrumentation import instrument_app
+from emma_common.api.response import TorchResponse
 from emma_common.aws.cloudwatch import add_cloudwatch_handler_to_logger
 from emma_common.logging import (
     InstrumentedInterceptHandler,
@@ -12,7 +13,6 @@ from emma_common.logging import (
     setup_rich_logging,
 )
 from fastapi import FastAPI, HTTPException, Response, UploadFile, status
-from fastapi.responses import ORJSONResponse
 from maskrcnn_benchmark.config import cfg
 from opentelemetry import trace
 from PIL import Image
@@ -111,8 +111,8 @@ async def update_model_device(device: DeviceRequestBody) -> str:
     return "success"
 
 
-@app.post("/features", response_class=ORJSONResponse)
-def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
+@app.post("/features", response_class=TorchResponse)
+def get_features_for_image(input_file: UploadFile) -> TorchResponse:
     """Endpoint for receiving features for a binary image.
 
     Example:
@@ -136,13 +136,13 @@ def get_features_for_image(input_file: UploadFile) -> ORJSONResponse:
     features = extract_features_for_batch(pil_image, api_store, settings.batch_size)
 
     with tracer.start_as_current_span("Build response"):
-        repsonse_content = features[0].dict()
+        response = TorchResponse(features[0])
 
-    return ORJSONResponse(repsonse_content)
+    return response
 
 
-@app.post("/batch_features", response_class=ORJSONResponse)
-def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
+@app.post("/batch_features", response_class=TorchResponse)
+def get_features_for_images(images: list[UploadFile]) -> TorchResponse:
     """Endpoint for receiving features for a batch of binary images.
 
     Example:
@@ -174,9 +174,9 @@ def get_features_for_images(images: list[UploadFile]) -> ORJSONResponse:
     extracted_features = extract_features_for_batch(open_images, api_store, settings.batch_size)
 
     with tracer.start_as_current_span("Build response"):
-        response_content = [feature.dict() for feature in extracted_features]
+        response = TorchResponse(extracted_features)
 
-    return ORJSONResponse(response_content)
+    return response
 
 
 def main() -> None:

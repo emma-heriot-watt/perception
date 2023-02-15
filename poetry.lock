@@ -1091,7 +1091,7 @@ idna = ">=2.0.0"
 
 [[package]]
 name = "emma-common"
-version = "1.14.0"
+version = "1.16.0"
 description = "Common modules which are used a lot throughout EMMA repositories"
 category = "main"
 optional = false
@@ -1123,7 +1123,7 @@ watchtower = "^3.0.0"
 type = "git"
 url = "https://github.com/emma-simbot/common"
 reference = "HEAD"
-resolved_reference = "3ffa3d09d26ba628b94ab9b3f12316f90c570a45"
+resolved_reference = "09c4acbd34c72fc8ffafdf06d6a17c0e4473fa90"
 
 [[package]]
 name = "entrypoints"
@@ -3113,6 +3113,7 @@ files = [
     {file = "ninja-1.11.1-py2.py3-none-musllinux_1_1_x86_64.whl", hash = "sha256:3b28b595ed580752240ade7821b6cb7a5a4c6a604c865dc474bd38f06e2eb7f5"},
     {file = "ninja-1.11.1-py2.py3-none-win32.whl", hash = "sha256:3329b4b7c1694730772522a3ba0ba40fd15c012476ed3e1c9f0fd9e76190394e"},
     {file = "ninja-1.11.1-py2.py3-none-win_amd64.whl", hash = "sha256:4e547bc759c570773d83d110c41fd5ca9a94c0a9a8388f5a3ea37bdf97d002b0"},
+    {file = "ninja-1.11.1-py2.py3-none-win_arm64.whl", hash = "sha256:8cf96f92ccc851c600cb3e1251c34db06f1dd682de79188ad490c33cddc66981"},
     {file = "ninja-1.11.1.tar.gz", hash = "sha256:c833a47d39b2d1eee3f9ca886fa1581efd5be6068b82734ac229961ee8748f90"},
 ]
 

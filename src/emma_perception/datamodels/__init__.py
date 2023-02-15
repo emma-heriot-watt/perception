@@ -1,1 +1,1 @@
-from emma_perception.datamodels.datamodels import ExtractedFeatures, ExtractedFeaturesAPI
+from emma_perception.datamodels.datamodels import ExtractedFeatures
