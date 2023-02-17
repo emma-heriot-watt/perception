@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.1](https://github.com/emma-simbot/perception/compare/v1.10.0...v1.10.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* place entity classifier on correct device ([#226](https://github.com/emma-simbot/perception/issues/226)) ([5f16fb5](https://github.com/emma-simbot/perception/commit/5f16fb538d36ec7918efe2053cda61be3106f2b0))
+
 ## [1.10.0](https://github.com/emma-simbot/perception/compare/v1.9.0...v1.10.0) (2023-02-15)
 
 
