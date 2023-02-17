@@ -72,7 +72,9 @@ async def startup_event() -> None:
     api_store.extractor = extractor
     api_store.transform = transform
     if settings.classmap_type == "simbot":
-        api_store.entity_classifier = SimBotEntityClassifier(SIMBOT_ENTITY_CLASSIFER_CENTROID_PATH)
+        api_store.entity_classifier = SimBotEntityClassifier(
+            SIMBOT_ENTITY_CLASSIFER_CENTROID_PATH, device=device
+        )
 
     logger.info("Setup complete!")
 
@@ -98,8 +100,9 @@ class DeviceRequestBody(BaseModel):
 @app.post("/update_model_device", status_code=status.HTTP_200_OK)
 async def update_model_device(device: DeviceRequestBody) -> str:
     """Update the device used by the model."""
+    new_device = torch.device(device.device)
     try:
-        api_store.extractor.to(torch.device(device.device))
+        api_store.extractor.to(new_device)
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -107,6 +110,18 @@ async def update_model_device(device: DeviceRequestBody) -> str:
                 current_device=api_store.extractor.device, requested_device=device.device
             ),
         )
+
+    if api_store.entity_classifier is not None:
+        try:
+            api_store.entity_classifier.move_to_device(new_device)
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to change the entity classifier device from {current_device} to {requested_device}".format(
+                    current_device=api_store.entity_classifier.device,
+                    requested_device=device.device,
+                ),
+            )
 
     return "success"
 
