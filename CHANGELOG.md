@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.2](https://github.com/emma-simbot/perception/compare/v1.10.1...v1.10.2) (2023-03-03)
+
+
+### Bug Fixes
+
+* round table is mapped to table entity ([#228](https://github.com/emma-simbot/perception/issues/228)) ([568bd7c](https://github.com/emma-simbot/perception/commit/568bd7cbdb97f40ba7a55a8c0851abd78ccffd4a))
+
 ## [1.10.1](https://github.com/emma-simbot/perception/compare/v1.10.0...v1.10.1) (2023-02-17)
 
 
