@@ -25,7 +25,11 @@ class SimBotEntityClassifier:
             centroid_vectors = self.centroids_vectors.get(class_label, None)
             if centroid_vectors is not None:
                 entity_index = self._cosine_distance(bbox_features[idx], centroid_vectors).argmax()
-                entities.append(self.centroids_names[class_label][entity_index])
+                # TODO: remove this with the new entity classifier
+                entity = self.centroids_names[class_label][entity_index]
+                if entity == "Round Table":
+                    entity = "Table"
+                entities.append(entity)
             else:
                 entities.append(class_label)
         return entities
