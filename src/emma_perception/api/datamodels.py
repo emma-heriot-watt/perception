@@ -5,7 +5,7 @@ from typing import Literal, Optional
 import torch
 from pydantic import BaseSettings
 
-from emma_perception.models.simbot_entity_classifier import SimBotEntityClassifier
+from emma_perception.models.simbot_entity_classifier import SimBotKNNEntityClassifier
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
 
@@ -22,7 +22,7 @@ class ApiSettings(BaseSettings):
     device_id: int = -1
     log_level: str = "info"
     # Dictionary containing the class information for the object detector
-    classmap_type: ClassmapType = "alfred"
+    classmap_type: ClassmapType = "simbot"
     # batch size used to extract visual features
     batch_size: int = 2
 
@@ -44,7 +44,7 @@ class ApiStore:
     extractor: VinVLExtractor
     transform: VinVLTransform
     device: torch.device
-    entity_classifier: Optional[SimBotEntityClassifier] = None
+    entity_classifier: Optional[SimBotKNNEntityClassifier] = None
 
 
 def parse_api_args() -> argparse.Namespace:
