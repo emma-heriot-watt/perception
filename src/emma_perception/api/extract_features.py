@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from emma_perception.api.api_dataset import ApiDataset
 from emma_perception.api.datamodels import ApiStore
 from emma_perception.constants import OBJECT_CLASSMAP
-from emma_perception.models.simbot_entity_classifier import SimBotKNNEntityClassifier
+from emma_perception.models.simbot_entity_classifier import SimBotMLPEntityClassifier
 from emma_perception.models.vinvl_extractor import VinVLExtractor
 
 
@@ -22,7 +22,7 @@ def get_batch_features(
     extractor: VinVLExtractor,
     batch: dict[str, torch.Tensor],
     device: torch.device,
-    entity_classifier: Optional[SimBotKNNEntityClassifier] = None,
+    entity_classifier: Optional[SimBotMLPEntityClassifier] = None,
 ) -> list[EmmaExtractedFeatures]:
     """Low-level implementation of the visual feature extraction process."""
     with tracer.start_as_current_span("Inference step"):

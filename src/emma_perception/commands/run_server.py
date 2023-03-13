@@ -21,8 +21,11 @@ from scene_graph_benchmark.config import sg_cfg
 
 from emma_perception._version import __version__  # noqa: WPS436
 from emma_perception.api import ApiSettings, ApiStore, extract_features_for_batch, parse_api_args
-from emma_perception.constants import SIMBOT_ENTITY_CLASSIFER_CENTROID_PATH
-from emma_perception.models.simbot_entity_classifier import SimBotKNNEntityClassifier
+from emma_perception.constants import (
+    SIMBOT_ENTITY_MLPCLASSIFIER_CLASSMAP_PATH,
+    SIMBOT_ENTITY_MLPCLASSIFIER_PATH,
+)
+from emma_perception.models.simbot_entity_classifier import SimBotMLPEntityClassifier
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
 
@@ -72,8 +75,10 @@ async def startup_event() -> None:
     api_store.extractor = extractor
     api_store.transform = transform
     if settings.classmap_type == "simbot":
-        api_store.entity_classifier = SimBotKNNEntityClassifier(
-            SIMBOT_ENTITY_CLASSIFER_CENTROID_PATH, device=device
+        api_store.entity_classifier = SimBotMLPEntityClassifier(
+            model_path=SIMBOT_ENTITY_MLPCLASSIFIER_PATH,
+            classmap_path=SIMBOT_ENTITY_MLPCLASSIFIER_CLASSMAP_PATH,
+            device=device,
         )
 
     logger.info("Setup complete!")

@@ -5,7 +5,7 @@ from typing import Literal, Optional
 import torch
 from pydantic import BaseSettings
 
-from emma_perception.models.simbot_entity_classifier import SimBotKNNEntityClassifier
+from emma_perception.models.simbot_entity_classifier import SimBotMLPEntityClassifier
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
 
@@ -44,7 +44,7 @@ class ApiStore:
     extractor: VinVLExtractor
     transform: VinVLTransform
     device: torch.device
-    entity_classifier: Optional[SimBotKNNEntityClassifier] = None
+    entity_classifier: Optional[SimBotMLPEntityClassifier] = None
 
 
 def parse_api_args() -> argparse.Namespace:

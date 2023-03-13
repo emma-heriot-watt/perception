@@ -1,0 +1,43 @@
+{
+	"label2idx": {
+		"Blue Button": 0,
+		"Blue Desk": 1,
+		"Bookshelf": 2,
+		"Computer": 3,
+		"Desk": 4,
+		"Embiggenator Monitor": 5,
+		"Freeze Ray Monitor": 6,
+		"Freeze Ray Shelf": 7,
+		"Gravity Monitor": 8,
+		"Green Button": 9,
+		"Green Desk": 10,
+		"Laser Monitor": 11,
+		"Laser Shelf": 12,
+		"Portal Generator Monitor": 13,
+		"Reception Desk": 14,
+		"Red Button": 15,
+		"Red Desk": 16,
+		"Table": 17
+	},
+	"idx2label": {
+		"0": "Blue Button",
+		"1": "Blue Desk",
+		"2": "Bookshelf",
+		"3": "Computer",
+		"4": "Desk",
+		"5": "Embiggenator Monitor",
+		"6": "Freeze Ray Monitor",
+		"7": "Freeze Ray Shelf",
+		"8": "Gravity Monitor",
+		"9": "Green Button",
+		"10": "Green Desk",
+		"11": "Laser Monitor",
+		"12": "Laser Shelf",
+		"13": "Portal Generator Monitor",
+		"14": "Reception Desk",
+		"15": "Red Button",
+		"16": "Red Desk",
+		"17": "Table"
+	},
+	"class_labels": ["Table", "Computer", "Shelf", "Wall Shelf", "Button"]
+}
