@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.13.0](https://github.com/emma-simbot/perception/compare/v1.12.0...v1.13.0) (2023-04-15)
+
+
+### Features
+
+* new entity clf ([#235](https://github.com/emma-simbot/perception/issues/235)) ([99da0ca](https://github.com/emma-simbot/perception/commit/99da0ca2ff773ece1b344320160d6e4cab0b0a90))
+
 ## [1.12.0](https://github.com/emma-simbot/perception/compare/v1.11.0...v1.12.0) (2023-03-13)
 
 
