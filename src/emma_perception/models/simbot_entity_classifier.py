@@ -163,15 +163,16 @@ class EntityClassifier(Module):
     def __init__(
         self,
         in_features: int = 2048,
-        hidden_dim: int = 128,
+        hidden_dim: int = 64,
         dropout: float = 0.2,
-        num_classes: int = 10,
+        num_classes: int = 23,
     ):
         super().__init__()
         self._in_features = in_features
         self._hidden_dim = hidden_dim
         self._num_classes = num_classes
         self._dropout = dropout
+
         self.classifier = self.make_layers()
 
     def make_layers(self) -> Sequential:
@@ -194,7 +195,7 @@ class EntityClassifier(Module):
 class EntityPolicy(pl.LightningModule):
     """Entity Lightning Module."""
 
-    def __init__(self, num_classes: int = 18) -> None:
+    def __init__(self, num_classes: int = 23) -> None:
         super().__init__()
 
         self.classifier = EntityClassifier(num_classes=num_classes)
