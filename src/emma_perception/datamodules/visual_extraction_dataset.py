@@ -37,7 +37,6 @@ class ImageDataset(Dataset[DatasetReturn]):
         image_loader: ImageLoaderType = "pil",
         preprocess_transform: Optional[Compose] = None,
     ) -> None:
-
         self.input_path = input_path
         self.dataset: list[str] = []
         self.image_loader = self._make_loader(image_loader)
@@ -102,13 +101,12 @@ class VideoFrameDataset(Dataset[DatasetReturn]):
         downsample: int = 0,
         preprocess_transform: Optional[Compose] = None,
     ) -> None:
-
         self.input_path = input_path
         self.dataset: list[str] = []
         self.image_loader = self._make_loader(image_loader)
         self.parser = self.parse_annotations(ann_csv, ann_type, downsample)
 
-        for (_, dirnames, _) in os.walk(self.input_path):
+        for _, dirnames, _ in os.walk(self.input_path):
             for dirname in dirnames:
                 dirpath = os.path.join(self.input_path, dirname)
                 if self.parser:

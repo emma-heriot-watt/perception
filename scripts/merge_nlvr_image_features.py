@@ -18,7 +18,7 @@ def merge_nlvr_image_features(input_path: Path, output_path: Path) -> None:
         )
 
     img_file_paths = list(zip(img_left_paths, img_right_paths))
-    for (img_left_path, img_right_path) in tqdm(img_file_paths):
+    for img_left_path, img_right_path in tqdm(img_file_paths):
         if img_left_path.split("img0")[0] != img_right_path.split("img1")[0]:
             raise AssertionError(f"Found unpaired images {img_left_path} {img_right_path}")
         img_left_features = torch.load(img_left_path)

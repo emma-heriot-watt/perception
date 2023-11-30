@@ -1,25 +1,15 @@
-import sys
 from io import BytesIO
 
 import torch
 import uvicorn
-from emma_common.api.instrumentation import instrument_app
 from emma_common.api.response import TorchResponse
-from emma_common.aws.cloudwatch import add_cloudwatch_handler_to_logger
-from emma_common.logging import (
-    InstrumentedInterceptHandler,
-    logger,
-    setup_logging,
-    setup_rich_logging,
-)
+from emma_common.logging import logger, setup_rich_logging
 from fastapi import FastAPI, HTTPException, Response, UploadFile, status
 from maskrcnn_benchmark.config import cfg
-from opentelemetry import trace
 from PIL import Image
 from pydantic import BaseModel
 from scene_graph_benchmark.config import sg_cfg
 
-from emma_perception._version import __version__  # noqa: WPS436
 from emma_perception.api import ApiSettings, ApiStore, extract_features_for_batch, parse_api_args
 from emma_perception.constants import (
     SIMBOT_ENTITY_MLPCLASSIFIER_CLASSMAP_PATH,
@@ -28,8 +18,6 @@ from emma_perception.constants import (
 from emma_perception.models.simbot_entity_classifier import SimBotMLPEntityClassifier
 from emma_perception.models.vinvl_extractor import VinVLExtractor, VinVLTransform
 
-
-tracer = trace.get_tracer(__name__)
 
 settings = ApiSettings()
 api_store = ApiStore()
@@ -108,25 +96,25 @@ async def update_model_device(device: DeviceRequestBody) -> str:
     new_device = torch.device(device.device)
     try:
         api_store.extractor.to(new_device)
-    except Exception:
+    except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to change the model device from {current_device} to {requested_device}".format(
                 current_device=api_store.extractor.device, requested_device=device.device
             ),
-        )
+        ) from err
 
     if api_store.entity_classifier is not None:
         try:
             api_store.entity_classifier.move_to_device(new_device)
-        except Exception:
+        except Exception as other_err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to change the entity classifier device from {current_device} to {requested_device}".format(
                     current_device=api_store.entity_classifier.device,
                     requested_device=device.device,
                 ),
-            )
+            ) from other_err
 
     return "success"
 
@@ -149,14 +137,14 @@ def get_features_for_image(input_file: UploadFile) -> TorchResponse:
         features (ExtractedFeaturesAPI): A pydantic BaseModel with the features of the bounding boxes
         coordinates, and their probabilities as well as the global cnn features.
     """
-    with tracer.start_as_current_span("Load image"):
-        image_bytes = input_file.file.read()
-        pil_image = Image.open(BytesIO(image_bytes))
+    logger.debug("Load image")
+    image_bytes = input_file.file.read()
+    pil_image = Image.open(BytesIO(image_bytes))
 
     features = extract_features_for_batch(pil_image, api_store, settings.batch_size)
 
-    with tracer.start_as_current_span("Build response"):
-        response = TorchResponse(features[0])
+    logger.debug("Build response")
+    response = TorchResponse(features[0])
 
     return response
 
@@ -184,43 +172,24 @@ def get_features_for_images(images: list[UploadFile]) -> TorchResponse:
     """
     open_images: list[Image.Image] = []
 
-    with tracer.start_as_current_span("Open images"):
-        for input_file in images:
-            byte_image = input_file.file.read()
-            io_image = BytesIO(byte_image)
-            io_image.seek(0)
-            open_images.append(Image.open(io_image))
+    logger.debug("Load images")
+    for input_file in images:
+        byte_image = input_file.file.read()
+        io_image = BytesIO(byte_image)
+        io_image.seek(0)
+        open_images.append(Image.open(io_image))
 
     extracted_features = extract_features_for_batch(open_images, api_store, settings.batch_size)
 
-    with tracer.start_as_current_span("Build response"):
-        response = TorchResponse(extracted_features)
+    logger.debug("Build response")
+    response = TorchResponse(extracted_features)
 
     return response
 
 
 def main() -> None:
     """Run the API, exactly the same as the way TEACh does it."""
-    if settings.traces_to_opensearch:
-        instrument_app(
-            app,
-            otlp_endpoint=settings.otlp_endpoint,
-            service_name=settings.opensearch_service_name,
-            service_version=__version__,
-            service_namespace="SimBot",
-        )
-        setup_logging(sys.stdout, InstrumentedInterceptHandler())
-    else:
-        setup_rich_logging(rich_traceback_show_locals=False)
-
-    if settings.log_to_cloudwatch:
-        add_cloudwatch_handler_to_logger(
-            boto3_profile_name=settings.aws_profile,
-            log_stream_name=settings.watchtower_log_stream_name,
-            log_group_name=settings.watchtower_log_group_name,
-            send_interval=1,
-            enable_trace_logging=settings.traces_to_opensearch,
-        )
+    setup_rich_logging(rich_traceback_show_locals=False)
 
     uvicorn.run(
         app,

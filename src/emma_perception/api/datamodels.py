@@ -26,16 +26,6 @@ class ApiSettings(BaseSettings):
     # batch size used to extract visual features
     batch_size: int = 2
 
-    # Observability
-    traces_to_opensearch: bool = False
-    log_to_cloudwatch: bool = False
-    aws_profile: str = "TeamProfile"
-    watchtower_log_group_name: str = "simbot_challenge"
-    watchtower_log_stream_name: str = "perception/{machine_name}/{logger_name}/{process_id}"
-
-    otlp_endpoint: str = "localhost:4317"
-    opensearch_service_name: str = "perception"
-
 
 @dataclass(init=False)
 class ApiStore:
