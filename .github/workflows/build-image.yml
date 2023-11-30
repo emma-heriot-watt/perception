@@ -28,6 +28,23 @@ jobs:
       packages: write
 
     steps:
+      - name: Get latest release tag
+        id: release-tag
+        uses: rez0n/actions-github-release@main
+        env:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          type: "stable"
+
+      - name: Define image tag
+        id: image-tag
+        env:
+          RELEASE_VERSION: ${{ steps.release-tag.outputs.release }}
+        run: |
+          IMAGE_TAG=$(echo "$RELEASE_VERSION" | cut -d v -f 2)
+          IMAGE_TAG=$(echo "$IMAGE_TAG$TORCH_VERSION_SUFFIX" | tr + -)
+          echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
       - name: Check out the repository
         uses: actions/checkout@v4
 
@@ -44,8 +61,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.REPOSITORY }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{steps.image-tag.outputs.tag}},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value=${{steps.image-tag.outputs.tag}},enable={{is_default_branch}}
 
       - name: Build and push image
         uses: docker/build-push-action@v5
@@ -58,15 +75,3 @@ jobs:
             BASE_IMAGE_NAME=${{ env.REGISTRY }}/{{ env.BASE_IMAGE }}
             BUILDER_IMAGE_NAME=${{ env.REGISTRY }}/{{ env.BUILDER_IMAGE }}
             TORCH_VERSION_SUFFIX=${{ matrix.torch_version_suffix }}
-
-      - name: Build, tag, and push the docker image
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          BASE_IMAGE_NAME: ${{ steps.login-ecr.outputs.registry }}/emma/base
-          BUILDER_IMAGE_NAME: ${{ steps.login-ecr.outputs.registry }}/emma/builder
-          RELEASE_VERSION: ${{ steps.release-tag.outputs.release }}
-          TORCH_VERSION_SUFFIX: ${{ matrix.torch_version_suffix }}
-        run: |
-          IMAGE_TAG=$(echo "$RELEASE_VERSION" | cut -d v -f 2)
-          IMAGE_TAG=$(echo "$IMAGE_TAG$TORCH_VERSION_SUFFIX" | tr + -)
-          docker build --build-arg BUILDER_IMAGE_NAME --build-arg BASE_IMAGE_NAME --build-arg TORCH_VERSION_SUFFIX --push -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
