@@ -1,0 +1,104 @@
+[tool.poetry]
+name = "emma-perception"
+version = "1.13.0"
+description = ""
+authors = [
+	"Amit Parekh <amit.parekh@hw.ac.uk>",
+	"Alessandro Suglia <alessandro.suglia@gmail.com>",
+]
+readme = "README.md"
+repository = "https://github.com/emma-simbot/perception"
+
+packages = [{ include = "emma_perception", from = "src" }]
+
+[tool.poe.tasks]
+
+[tool.poe.tasks.format]
+help = "Format using the pre-commit hooks"
+cmd = "pre-commit run --all-files"
+
+[tool.poe.tasks.typecheck]
+help = "Check types with mypy"
+cmd = "mypy ."
+
+[tool.poe.tasks.lint]
+help = "Lint with flake8"
+cmd = "flake8 ."
+
+[tool.poe.tasks.test]
+help = "Run the fast Python tests"
+cmd = "pytest --cov=src -m 'not slow'"
+
+[tool.poe.tasks.test-everything]
+help = "Run all the tests and get the coverage"
+cmd = "pytest -v --junitxml=pytest.xml --cov=src -m 'not slow and not multiprocessing'"
+
+
+[tool.poe.tasks.install-correct-torch-wheel]
+## See https://github.com/python-poetry/poetry/issues/2543
+help = "Update torch to use the latest CUDA version"
+shell = "python scripts/update_torch_cuda.py"
+
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.10"
+torch = "1.10.2"
+torchvision = "0.11.3"
+pytorch-lightning = ">=1.5,<2"
+pydantic = { extras = ["dotenv"], version = ">=1.9.0,<2" }
+rich = ">=12.2.0"
+overrides = ">=6.1.0"
+requests = ">=2.27.1"
+fastapi = ">=0.88.0"
+h5py = "3.7.0"
+nltk = "3.8"
+joblib = "1.2.0"
+pandas = ">=1.4.2,<2"
+scipy = "1.9.3"
+ninja = "1.11.1"
+yacs = "0.1.8"
+Cython = ">=0.29.28"
+tqdm = ">=4.64.0"
+numpy = "<1.24"
+einops = ">=0.4.1"
+timm = "0.5.4"
+pycocotools = "2.0.6"
+cityscapesScripts = "2.2.1"
+opencv-python-headless = ">=4.5.5,<5"
+orjson = ">=3.8.3"
+maskrcnn-benchmark = { git = "https://github.com/emma-heriot-watt/scene-graph-benchmark.git" }
+emma-common = { git = "https://github.com/emma-heriot-watt/common.git" }
+
+
+[tool.poetry.group.dev.dependencies]
+wemake-python-styleguide = ">=0.16.1"
+flake8 = ">=4.0"
+mypy = ">=0.942"
+pytest = ">=7.1.2"
+ipykernel = ">=6.13.0"
+pre-commit = ">=2.18.1"
+poethepoet = ">=0.13.1"
+pytest-cov = ">=3.0.0"
+pudb = ">=2022.1"
+isort = ">=5.10.1"
+pytest-cases = ">=3.6.11"
+types-requests = ">=2.27.16"
+jupyterlab = ">=3.3.3"
+jupyter = ">=1.0.0"
+ipython = ">=8.2.0"
+matplotlib = ">=3.5.1,<4"
+
+
+[tool.black]
+line-length = 99
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+lines_after_imports = 2
+line_length = 99
+known_first_party = ["emma_perception"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "setuptools"]
+build-backend = "poetry.core.masonry.api"
